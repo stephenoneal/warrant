@@ -215,6 +215,20 @@ class Cognito(object):
         self.access_token = tokens['AuthenticationResult']['AccessToken']
         self.token_type = tokens['AuthenticationResult']['TokenType']
 
+    def new_password_challenge(self, password, new_password):
+        """
+        Authenticate the user using the SRP protocol
+        :param password: The user's passsword
+        :return:
+        """
+        aws = AWSSRP(username=self.username, password=password, pool_id=self.user_pool_id,
+                     client_id=self.client_id, client=self.client)
+        tokens = aws.set_new_password_challenge(new_password)
+        self.id_token = tokens['AuthenticationResult']['IdToken']
+        self.refresh_token = tokens['AuthenticationResult']['RefreshToken']
+        self.access_token = tokens['AuthenticationResult']['AccessToken']
+        self.token_type = tokens['AuthenticationResult']['TokenType']
+
     def logout(self):
         """
         Logs the user out of all clients and removes the expires_in,
